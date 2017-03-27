@@ -2,23 +2,18 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { fetchWeather } from './actions'
-import SearchBar from './components/SearchBar'
-import Loader from './components/Loader'
+import { SearchBar } from './searchbar/index'
+
 
 let WeatherSection = ({
-  weather: { loading },
   fetchWeather
 }) => (
   <div>
-    <SearchBar fetchWeather={fetchWeather} />
-
-    { loading && <Loader /> }
+    <SearchBar />
   </div>
 )
 
 export default connect(
-  state => ({
-    weather: state.weather
-  }),
+  null,
   { fetchWeather }
 )(WeatherSection)

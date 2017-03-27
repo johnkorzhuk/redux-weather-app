@@ -1,14 +1,18 @@
-import React, { Component, PropTypes } from 'react'
-const { func } = PropTypes
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+
+import { fetchWeather } from './../actions'
+
 const initState = {
   input: ''
 }
 
-export default class SearchBar extends Component {
-  static propTypes = {
-    fetchWeather: func.isRequired
-  }
+const Wrapper = styled.div`
+  margin-top: 25px;
+`
 
+class SearchBar extends Component {
   state = initState
 
   _handleCange = e => {
@@ -25,21 +29,26 @@ export default class SearchBar extends Component {
 
   render () {
     return (
-      <div className='col-md-8 col-md-offset-2'>
+      <Wrapper className='col-md-8 col-md-offset-2'>
         <form
           className='input-group'
           onSubmit={this._handleFormSubmit}>
           <input
             className='form-control'
             type='text'
-            placeholder='new york'
+            placeholder='city or zip'
             value={this.state.input}
             onChange={this._handleCange} />
           <span className='input-group-btn'>
             <button className='btn btn-secondary' type='submit'>Submit</button>
           </span>
         </form>
-      </div>
+      </Wrapper>
     )
   }
 }
+
+export default connect(
+  null,
+  { fetchWeather }
+)(SearchBar)

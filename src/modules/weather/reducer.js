@@ -5,9 +5,36 @@ import {
 } from './actions'
 
 const INITIAL_STATE = {
-  data: [],
+  data: {},
   error: null,
-  loading: false
+  loading: false,
+  minMaxTemps: {
+    min: null,
+    max: null
+  }
+}
+
+const getMinMaxTemp = (state, action) => {
+  const newLoc = action.data[Object.keys(action.data)[0]]
+  const { min, max } = state
+  let newMinMaxTemp = {
+    min: newLoc.currently.temperature,
+    max: newLoc.currently.temperature
+  }
+
+  newLoc.hourly.data.reduce((acc, val) => {
+    if (val.temperature < acc.min) acc.min = val.temperature
+    else if (val.temperature > acc.max) acc.max = val.temperature
+    return acc
+  }, newMinMaxTemp)
+
+  if (!min) {
+    return newMinMaxTemp
+  } else {
+    if (min < newMinMaxTemp.min) newMinMaxTemp.min = min
+    else if (max > newMinMaxTemp.max) newMinMaxTemp.max = max
+    return newMinMaxTemp
+  }
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -22,7 +49,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading: false,
-        data: action.data
+        data: {
+          ...state.data,
+          ...action.data
+        },
+        minMaxTemps: getMinMaxTemp(state.minMaxTemps, action)
       }
 
     case FETCH_WEATHER_ERROR:
